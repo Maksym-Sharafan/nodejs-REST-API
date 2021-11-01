@@ -3,13 +3,18 @@ const jwt = require("jsonwebtoken")
 
 const { User } = require("../../models")
 
+
 const { SECRET_KEY } = process.env
+
+
 
 const login = async (req, res) => {
     const { email, password } = req.body
+
     const user = await User.findOne({ email })
-    if (!user || !user.comparePassword(password)) {
-        throw new Unauthorized(`Wrong email or password`)
+
+    if (!user || !user.verify || !user.comparePassword(password)) {
+        throw new Unauthorized(`Wrong email or password or not verify`);
     }
 
     const payload = {

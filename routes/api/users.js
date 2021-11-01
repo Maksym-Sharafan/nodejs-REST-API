@@ -26,4 +26,10 @@ router.patch("/", authenticate, controllerWrapper(ctrlUsers.updateSubscription))
 router.patch("/avatars", authenticate, upload.single("avatar"), controllerWrapper(ctrlUsers.updateAvatar))
 
 
+router.get("/verify/:verificationToken", controllerWrapper(ctrlUsers.verify))
+
+
+router.post("/verify", controllerWrapper(ctrlUsers.reVerification))
+
+
 module.exports = router

@@ -1,7 +1,12 @@
 const { Conflict } = require("http-errors")
 const gravatar = require('gravatar')
+const { v4 } = require('uuid');
+
+// const sgMail = require('@sendgrid/mail')
+// sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 
 const { User } = require("../../models")
+const { sendEmail } = require("../../helpers")
 
 const register = async (req, res) => {
     const { email, password } = req.body
@@ -12,10 +17,27 @@ const register = async (req, res) => {
     }
 
     const avatarURL = gravatar.url(email)
-    const newUser = new User({ email, avatarURL })
+    const verifyToken = v4()
+    const newUser = new User({
+        email,
+        avatarURL,
+        verifyToken
+    })
 
     newUser.setPassword(password)
     await newUser.save()
+
+    const mail = {
+        to: email,
+        subject: "Подтверждение регистрации на сайте",
+        text: "Подтверждение регистрации на сайте",
+        html: `
+        <a target="_blank" 
+            href="http://localhost:3000/api/users/verify/${verifyToken}">Нажмите для подтверждения email</a>
+        `
+    }
+
+    sendEmail(mail)
 
     res.status(201).json({
         status: "success",

@@ -1,6 +1,6 @@
-const { Schema, model } = require("mongoose");
-const Joi = require("joi");
-const bcrypt = require("bcryptjs");
+const { Schema, model } = require("mongoose")
+const Joi = require("joi")
+const bcrypt = require("bcryptjs")
 
 const userSchema = Schema({
     password: {
@@ -24,7 +24,15 @@ const userSchema = Schema({
     avatarURL: {
         type: String,
         required: true
-    }
+    },
+    verify: {
+        type: Boolean,
+        default: false,
+    },
+    verifyToken: {
+        type: String,
+        required: [true, 'Verify token is required'],
+    },
 }, { versionKey: false, timestamps: true })
 
 userSchema.methods.setPassword = function (password) {
